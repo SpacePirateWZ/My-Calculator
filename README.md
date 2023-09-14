@@ -2,6 +2,7 @@
 Attempting The Odin Project: Calculator 
 
 **1st Attempt Notes:**
+
 To consider:
 1) default value of screen is always set at zero
 2) clicking each number will add the entered number to the end of the value
@@ -21,8 +22,6 @@ percent - essentially just divide by 100
 5) allow for exponential value but beyond a certain threshold will become NaN
 6) if get infinity will display undefined or something funny
 7) pressing keyboard also will interact with the calculator apart from clicking (extra)
-
->> for other requirements need to furthur refer to odin project page
 
 **2nd Attempt Notes:**
 
