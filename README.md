@@ -8,14 +8,22 @@ To consider:
 2) clicking each number will add the entered number to the end of the value
 3) functions of each button are as follows:
 
-AC - reset screen value back to zero
-posneg - change current entered value to positive/negative
-percent - essentially just divide by 100
-/ --> divide the next entered value after clicking any function2 buttons
-* --> multiply the next entered value after clicking any function2 buttons
-- --> subtract the next entered value after clicking any function2 buttons
-+ --> add the next entered value after clicking any function2 buttons
-= --> complete the last function2 operation
+'**AC**' --> reset screen value back to zero
+
+'**posneg**' --> change current entered value to positive/negative
+
+'**percent**' --> essentially just divide by 100
+
+'**/**' --> divide the next entered value after clicking any function2 buttons
+
+'*' --> multiply the next entered value after clicking any function2 buttons
+
+'**-**' --> subtract the next entered value after clicking any function2 buttons
+
+'**+**' --> add the next entered value after clicking any function2 buttons
+  
+'**=**' --> complete the last function2 operation
+
 (Note that the one difference between equal and other function 2 buttons is that after clicking equal, clicking a number will reset the number back to the entered number, meaning that previous number accumulated will be dumped. Unless user click on other function1/function2 buttons in which case the previous number will continue to be affected)
 
 4) maximum number of digits to display on screen is 9
