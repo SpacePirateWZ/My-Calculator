@@ -1,115 +1,96 @@
-let displayValue = '';
-let displayValue2 = '';
-let firstNum = displayValue;
-let secondNum = displayValue2;
-let operator;
-let functionButtonClicked = false;
+const operandButton = document.querySelectorAll('[data-operand]');
+const operatorButton = document.querySelectorAll('[data-operator]');
+const allClearButton = document.querySelector('[data-all-clear]');
+const posNegButton = document.querySelector('[data-pos-neg]');
+const equalButton = document.querySelector('[data-equal]');
+const displayScreen = document.querySelector('[data-display]');
 
-const displayScreen = document.querySelector("#display");
-const button1 = document.querySelector("#one");
-const button2 = document.querySelector("#two");
-const button3 = document.querySelector("#three");
-const button4 = document.querySelector("#four");
-const button5 = document.querySelector("#five");
-const button6 = document.querySelector("#six");
-const button7 = document.querySelector("#seven");
-const button8 = document.querySelector("#eight");
-const button9 = document.querySelector("#nine");
-const button0 = document.querySelector("#zero");
-const addButton = document.querySelector("#add");
-const subtractButton = document.querySelector("#subtract");
-const multiplyButton = document.querySelector("#multiply");
-const divideButton = document.querySelector("#divide");
-const clearButton = document.querySelector("#clear");
-const posNegButton = document.querySelector("#posneg");
-const percentButton = document.querySelector("#percent");
-const pointButton = document.querySelector("#point");
-const equalButton = document.querySelector("#equal");
-
-// initialize display screen
-// initialize buttons
-
-// button1.onclick = function() {
-//     populateToScreen(1);
-// };
-button1.onclick = () => populateToScreen(1);
-button2.onclick = () => populateToScreen(2);
-button3.onclick = () => populateToScreen(3);
-button4.onclick = () => populateToScreen(4);
-button5.onclick = () => populateToScreen(5);
-button6.onclick = () => populateToScreen(6);
-button7.onclick = () => populateToScreen(7);
-button8.onclick = () => populateToScreen(8);
-button9.onclick = () => populateToScreen(9);
-button0.onclick = () => populateToScreen(0);
-clearButton.onclick = () => clearScreen();
-
-const operate = function(firstNum, operator, secondNum) {
-    if (functionButtonClicked === false) {
-        functionButtonClicked = true;
-    } else {
-        displayScreen.innerText = '0',
-        displayValue = '';
-        return;
+class Calculator {
+    constructor(displayScreen) {
+        this.displayScreen = displayScreen;
+        this.clear(); // is important to run this function at the beginning to set the currentDisplay & previousDisplay to empty string, so that the toString() in appendNumber() can function
     }
-    if (operator === 'add') {
-        let result = add(firstNum, secondNum);
-        return result;
-    } else if (operator === 'subtract') {
-        let result = subtract(firstNum, secondNum);
-        return result;
-    }  else if (operator === 'multiply') {
-        let result = multiply(firstNum, secondNum);
-        return result;
-    } else if (operator === 'divide') {
-        let result = divide(firstNum, secondNum);
-        return result;
+
+    clear() {
+        this.currentDisplay = '';
+        this.previousDisplay = '';
+        this.operation = undefined;
     }
-}
 
-// addButton.addEventListener('click', function() {
-//     operate(firstNum, 'add', secondNum);
-// });
-addButton.addEventListener('click', () => operate(firstNum, 'add', secondNum));
-subtractButton.addEventListener('click', () => operate(firstNum, 'subtract', secondNum));
-multiplyButton.addEventListener('click', () => operate(firstNum, 'multiply', secondNum));
-divideButton.addEventListener('click', () => operate(firstNum, 'divide', secondNum));
-
-
-function add(firstNum, secondNum) {
-    return Number(firstNum) + Number(secondNum);
-}
-
-function subtract(firstNum, secondNum) {
-    return Number(firstNum) - Number(secondNum);
-}
-
-function multiply(firstNum, secondNum) {
-    return Number(firstNum) * Number(secondNum);
-}
-
-function divide(firstNum, secondNum) {
-    return Number(firstNum) / Number(secondNum);
-}
-
-function populateToScreen(num) {
-    if (displayValue.length < 9) {
-        displayValue = displayValue + num + '';
-        displayScreen.innerText = displayValue;
-    }
-    if (functionButtonClicked === true) {
-        displayScreen.innerText = displayValue2;
-        if (displayValue2.length < 9) {
-            displayValue2 = displayValue2 + num + '';
-            displayScreen.innerText = displayValue2;
+    appendNumber(operand) {
+        if (operand === '.' && this.currentDisplay.includes('.')) return // prevent multiple dots
+        if (operand === '0' && this.currentDisplay.startsWith('0') === true && this.currentDisplay.length > 0 && this.currentDisplay.length <= 1) {
+            this.clear();
         }
+        this.currentDisplay = this.currentDisplay.toString() + operand.toString();
+    }
+
+    chooseOperation(operator) { 
+        if (this.currentDisplay === '') return // this is to prevent this function from running if there are no operands
+        if (this.previousDisplay !== '') {
+            this.operate(); // run operate() after checking that both currentDisplay & previousDisplay contain values
+        }
+        this.operation = operator;
+        this.previousDisplay = this.currentDisplay;
+        this.currentDisplay = ''
+    }
+
+    operate() {
+        let result; // to store operation result
+        const previousValue = parseFloat(this.previousDisplay);
+        const currentValue = parseFloat(this.currentDisplay);
+        if (isNaN(previousValue) || isNaN(currentValue)) return
+        switch (this.operation) {
+        case '+': 
+            result = previousValue + currentValue;
+            break
+        case '-': 
+            result = previousValue - currentValue;
+            break
+        case '*': 
+            result = previousValue * currentValue;
+            break
+        case '/': 
+            result = previousValue / currentValue;
+            break
+        default:
+            return
+        }
+        this.currentDisplay = result.toString(); // convert result back to string so that the updateDisplay() can perform the substring(0,9) on it
+        this.operation = undefined;
+        this.previousDisplay = '';   
+    }
+
+    updateDisplay() {
+        if(this.currentDisplay.length > 9) {
+            this.currentDisplay = this.currentDisplay.substring(0,9);
+        }
+        console.log(this.currentDisplay);
+        this.displayScreen.innerText = this.currentDisplay;
     }
 }
 
-function clearScreen() {
-    displayScreen.innerText = '0',
-    displayValue = '';
-}
+let calc = new Calculator(displayScreen);
 
+operandButton.forEach(function(button){
+    button.addEventListener('click', function(){
+        calc.appendNumber(button.innerText);
+        calc.updateDisplay();
+    })
+})
 
+operatorButton.forEach(function(button){
+    button.addEventListener('click', function(){
+        calc.chooseOperation(button.innerText);
+    })
+})
 
+allClearButton.addEventListener('click', function(){
+    calc.clear();
+    calc.updateDisplay();
+})
+
+equalButton.addEventListener('click', function(){
+    calc.operate();
+    calc.updateDisplay();
+})
